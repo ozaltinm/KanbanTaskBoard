@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/KanbanTaskBoard.Api.props" />
+</Project>

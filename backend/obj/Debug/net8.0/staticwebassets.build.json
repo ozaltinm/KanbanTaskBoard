@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "WOBO0lHzXU9nDWBeJWkO/21uSB6C3Byp21EnFeSnzIw=",
+  "Source": "KanbanTaskBoard.Api",
+  "BasePath": "_content/KanbanTaskBoard.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
