@@ -9,20 +9,27 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("kanban-db"));
+// ---- CORS (DEV) ----
+const string DevCors = "DevCors";
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(DevCors, p => p
+        .AllowAnyOrigin()  // sorun çözülünce WithOrigins(...) ile daralt
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+    );
+});
 
+// Services
+builder.Services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase("kanban-db"));
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskValidator>();
-
 builder.Services.AddScoped<ITaskService, TaskService>();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -30,6 +37,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.MapControllers();
-app.Run();
+// ---- Sıra kritik ----
+app.UseRouting();
+app.UseCors(DevCors);
+
+// app.UseHttpsRedirection(); // container'da HTTP, devde kapalı kalsın
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapControllers().RequireCors(DevCors);
+app.MapMethods("{*path}", new[] { "OPTIONS" }, () => Results.Ok())
+   .RequireCors(DevCors);
+app.MapGet("/", () => Results.Ok(new { status = "ok" }))
+   .RequireCors(DevCors);
+
+app.Run();                   // ← top-level statements burada biter
+
+// ← sınıf TANIMI en sonda olacak
+public partial class Program { }

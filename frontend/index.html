@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kanban</title>
+    <style>
+      body{margin:0;font-family:ui-sans-serif,system-ui,Arial}
+      .container{max-width:1200px;margin:0 auto;padding:16px}
+      .board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+      .column{background:#f6f7f9;border-radius:12px;padding:12px;min-height:70vh}
+      .col-title{font-weight:700;margin:4px 0 12px 0}
+      .card{background:#fff;border-radius:10px;padding:10px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);cursor:grab}
+      .row{display:flex;gap:8px}
+      .btn{padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+      .btn.primary{background:#1a73e8;color:#fff;border-color:#1a73e8}
+      .btn.danger{background:#e84545;color:#fff;border-color:#e84545}
+      .input, .textarea, .select{width:100%;padding:8px;border-radius:8px;border:1px solid #ddd}
+      .modal{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center}
+      .modal .box{background:#fff;border-radius:12px;padding:16px;min-width:340px;max-width:520px;width:90%}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
