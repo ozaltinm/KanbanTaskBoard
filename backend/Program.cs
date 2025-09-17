@@ -8,20 +8,19 @@ using KanbanTaskBoard.Api.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// ---- CORS (DEV) ----
-const string DevCors = "DevCors";
 builder.Services.AddCors(opt =>
 {
-    opt.AddPolicy(DevCors, p => p
-        .AllowAnyOrigin()  // sorun çözülünce WithOrigins(...) ile daralt
+    opt.AddPolicy("CorsPolicy", p => p
+        .WithOrigins("http://localhost:5173") // frontend adresin
         .AllowAnyHeader()
         .AllowAnyMethod()
     );
 });
 
 // Services
-builder.Services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase("kanban-db"));
+//builder.Services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase("kanban-db"));
+builder.Services.AddDbContext<AppDbContext>(o =>
+    o.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskValidator>();
 builder.Services.AddScoped<ITaskService, TaskService>();
@@ -37,21 +36,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ---- Sıra kritik ----
 app.UseRouting();
-app.UseCors(DevCors);
-
-// app.UseHttpsRedirection(); // container'da HTTP, devde kapalı kalsın
+app.UseCors("CorsPolicy");
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.MapControllers().RequireCors(DevCors);
+app.MapControllers().RequireCors("CorsPolicy");
 app.MapMethods("{*path}", new[] { "OPTIONS" }, () => Results.Ok())
-   .RequireCors(DevCors);
+   .RequireCors("CorsPolicy");
 app.MapGet("/", () => Results.Ok(new { status = "ok" }))
-   .RequireCors(DevCors);
+   .RequireCors("CorsPolicy");
 
-app.Run();                   // ← top-level statements burada biter
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
-// ← sınıf TANIMI en sonda olacak
+app.Run();                  
+
+// Make the implicit Program class public so test projects can access it
 public partial class Program { }

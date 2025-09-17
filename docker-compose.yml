@@ -10,6 +10,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__Default=Data Source=/app/data/kanban.db
+    volumes:
+      - ./data:/app/data           # SQLite file 
+    restart: unless-stopped
 
   web:
     build:
@@ -19,7 +23,7 @@ services:
     ports:
       - "5173:80"
     environment:
-      # Tarayıcı doğrudan host'taki API portuna gider.
+      # API base URL for Vite
       - VITE_API_BASE=http://localhost:5121
     depends_on:
       - api

@@ -1,0 +1,36 @@
+# .NET build artifacts
+bin/
+obj/
+out/
+
+# SQLite local DB
+../data/
+*.db
+*.db-shm
+*.db-wal
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+*.stackdump
+
+# Docker / env
+*.pid
+.env
+docker-compose.override.yml
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.DS_Store
+
+# Coverage / test results
+coverage/
+TestResults/
