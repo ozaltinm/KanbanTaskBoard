@@ -10,7 +10,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__Default=Data Source=/app/data/kanban.db
     volumes:
       - ./data:/app/data           # SQLite file 
     restart: unless-stopped
